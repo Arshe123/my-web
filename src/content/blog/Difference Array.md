@@ -72,5 +72,5 @@ diff[right + 1] -= value
 
 多说无益，上题
 
-![image-20250522155437423](./差分数组.assets/image-20250522155437423.png)
+![image-20250522155437423](./Difference Array.assets/image-20250522155437423.png)
 
