@@ -2,7 +2,7 @@
 title: 第一篇博客
 description: '看别人的博客感觉非常不错，也觉着学习和生活都应该记录一下，于是产生了这个网站'
 publishDate: 2025-09-24 15:02:04
-heroImage: { src: './First Post.assets/dashu.jpg', color: '#895d25' }
+heroImage: { src: './FirstPost.assets/dashu.jpg', color: '#895d25' }
 tags:
   - life
 ---
