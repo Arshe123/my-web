@@ -1,4 +1,4 @@
 declare module 'virtual:config' {
-  const Config: import('@/types').ConfigOutput
+  const Config: import('astro-pure/types').ConfigOutput
   export default Config
 }

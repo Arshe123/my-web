@@ -1,4 +1,4 @@
-import type { ThemeUserConfig, CardListData, Config, IntegrationUserConfig } from '@/types'
+import type { ThemeUserConfig, CardListData, Config, IntegrationUserConfig } from 'astro-pure/types'
 
 export const theme: ThemeUserConfig = {
   // === Basic configuration ===
@@ -58,19 +58,7 @@ export const theme: ThemeUserConfig = {
   /** Configure the footer of your site. */
   footer: {
     year: `© ${new Date().getFullYear()}`,
-    links: [
-      {
-        title: '黔ICP备2025059058号-1',
-        link: 'https://beian.miit.gov.cn/',
-        style: 'text-sm'
-      },
-      {
-        icon: 'https://arshe.cn/images/beian.png',
-        title: '贵公网安备52032102000858号',
-        link: 'https://beian.mps.gov.cn/#/query/webSearch?code=52032102000858',
-        style: 'text-sm'
-      }
-    ],
+    links: [], /** 已经在下方改为自定义 */
     /** Enable displaying a “Astro & Pure theme powered” link in your site’s footer. */
     credits: true,
     /** Optional details about the social media accounts for this site. */
@@ -181,6 +169,22 @@ export const terms: CardListData = {
     }
   ]
 }
+
+export const footerLink: { title: string; link: string; icon?:string; style?: string; pos?: number }[] = [
+  {
+    title: '黔ICP备2025059058号-1',
+    link: 'https://beian.miit.gov.cn/',
+    style: 'text-sm',
+    pos: 1
+  },
+  {
+    icon: 'https://arshe.cn/images/beian.png',
+    title: '贵公网安备52032102000858号',
+    link: 'https://beian.mps.gov.cn/#/query/webSearch?code=52032102000858',
+    style: 'text-sm',
+    pos: 1
+  }
+]
 
 const config = { ...theme, integ } as Config
 export default config

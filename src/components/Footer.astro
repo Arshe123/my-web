@@ -3,6 +3,8 @@ import config from 'virtual:config'
 
 import { Icon } from 'astro-pure/user'
 
+import { footerLink } from '@/site-config'
+
 const footerConf = config.footer
 let social = footerConf.social || {}
 
@@ -12,7 +14,7 @@ social.rss = {
   url: '/rss.xml'
 }
 
-const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
+const footerLink1 = footerLink?.filter(({ pos }) => pos === 1) || []
 ---
 
 <footer class='mx-auto mb-5 mt-16 w-full'>
@@ -27,9 +29,7 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
             <div>
               {footerLink1.map(({ icon, title, link, style}, index) => (
                 <span>
-                  {/*未解决icon的读取问题，暂定方案*/}
-                  { title === '贵公网安备52032102000858号' && (<img src="/images/beian.png" alt="备案" class="h-4 w-4" style="display: inline-flex;" />)}
-                  {icon && (<img src={icon} alt={title} />)}
+                  {icon && (<img src={icon} alt={title} class="h4 w4 flex-inline"/>)}
                   <a href={link} target='_blank' class={style}>
                     {title}
                   </a>
