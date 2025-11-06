@@ -15,6 +15,17 @@ html {
   font-family: 'Satoshi', sans-serif;
 }
 
+/* Enable smooth scrolling for anchor navigations */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 /* Theme */
 :root {
   --background: 210 33% 99%;
