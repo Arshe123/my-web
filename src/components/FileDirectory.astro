@@ -1,0 +1,199 @@
+---
+import { cn } from 'astro-pure/utils'
+
+interface FileNode {
+  name: string;
+  isDirectory: boolean;
+  children?: FileNode[];
+  icon?: string;
+  description?: string;
+}
+
+interface Props {
+  class?: string;
+  directory: FileNode;
+  depth?: number;
+}
+
+const { 
+  class: className, 
+  directory, 
+  depth = 0 
+} = Astro.props;
+
+const indentStyle = `pl-${4 + depth * 2}`;
+---
+<file-directory class={cn('group/expand', className)}>
+  <div
+    class={cn(
+      'rounded-xl border px-3 my-1 sm:px-4 group-[.expanded]/expand:bg-muted',
+      depth > 0 ? 'border-0' : ''
+    )}
+  >
+    <div
+      class={`group/highlight expand-title flex cursor-pointer items-center justify-between py-1.5 group-[.expanded]/expand:bg-muted sm:py-2 ${indentStyle}`}
+    >
+      <div class="flex items-center gap-2 min-w-0 flex-1">
+        {directory.isDirectory ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="transition-colors group-hover/highlight:text-primary"
+          >
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="transition-colors group-hover/highlight:text-primary"
+          >
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        )}
+        <div class="flex min-w-0 flex-1 items-center">
+          <p class="m-0 min-w-0 transition-colors group-hover/highlight:text-primary truncate">{directory.name}</p>
+          {directory.description ? (
+            <span class="ml-2 min-w-0 text-muted-foreground truncate">— {directory.description}</span>
+          ) : null}
+        </div>
+      </div>
+
+      {directory.isDirectory && directory.children?.length ? (
+        <div class="expand-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="my-1 stroke-muted-foreground transition-all duration-300 group-hover/highlight:stroke-primary"
+          >
+            <line
+              x1="5"
+              y1="12"
+              x2="19"
+              y2="12"
+              class="translate-x-1 scale-x-100 duration-300 ease-in-out"
+            ></line>
+            <polyline
+              points="12 5 19 12 12 19"
+              class="translate-x-1 duration-300 ease-in-out"
+            ></polyline>
+          </svg>
+        </div>
+      ) : null}
+    </div>
+
+    {directory.isDirectory && directory.children?.length ? (
+      <div
+        class="expand-content grid opacity-0 transition-all duration-300 ease-in-out group-[.expanded]/expand:mb-3 group-[.expanded]/expand:opacity-100 sm:group-[.expanded]/expand:mb-4"
+      >
+        <div class="overflow-hidden children-container">
+          {directory.children.map((child) => (
+            <Astro.self 
+              directory={child} 
+              depth={depth + 1} 
+            />
+          ))}
+        </div>
+      </div>
+    ) : null}
+  </div>
+</file-directory>
+
+<script>
+  class FileDirectory extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      const expandTitle = this.querySelector('.expand-title');
+      expandTitle?.addEventListener('click', () => {
+        this.classList.toggle('expanded');
+      });
+    }
+  }
+  if (!customElements.get('file-directory')) {
+    customElements.define('file-directory', FileDirectory);
+  }
+</script>
+
+<style>
+  file-directory .expand-content {
+    grid-template-rows: 0fr;
+  }
+  file-directory.expanded > div > .expand-content {
+    grid-template-rows: 1fr;
+  }
+  /* 仅当前层级的箭头旋转 */
+  file-directory > div > .expand-title .expand-button svg {
+    transform: rotate(0deg);
+  }
+  file-directory.expanded > div > .expand-title .expand-button svg {
+    transform: rotate(-90deg);
+  }
+  /* 仅当前层级的横线在展开时隐藏（平移+缩放），并添加过渡 */
+  file-directory > div > .expand-title .expand-button svg line {
+    transition: transform 300ms ease-in-out;
+  }
+  file-directory.expanded > div > .expand-title .expand-button svg line {
+    transform: translateX(1rem) scaleX(0);
+  }
+  /* 仅当前层级的箭头主体在展开时归位（与 Collapse 一致） */
+  file-directory > div > .expand-title .expand-button svg polyline {
+    transition: transform 300ms ease-in-out;
+  }
+  file-directory.expanded > div > .expand-title .expand-button svg polyline {
+    transform: translateX(0);
+  }
+  /* 展开时为当前层级的子列表添加左侧虚线连接（不影响文字不透明度） */
+  file-directory.expanded > div > .expand-content > .children-container {
+    position: relative;
+    margin-left: 0.25rem;
+    padding-left: 0.5rem;
+  }
+  file-directory.expanded > div > .expand-content > .children-container::before {
+    content: "";
+    position: absolute;
+    top: 0.25rem;
+    bottom: 0.25rem;
+    left: 0;
+    border-left: 1px dashed currentColor;
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 150ms ease-in-out, border-left-width 150ms ease-out;
+  }
+  /* 当当前目录 hover 时，高亮当前层级的虚线连接 */
+  file-directory > div > .expand-title:hover + .expand-content > .children-container::before {
+    opacity: 1;
+    border-left-width: 2px;
+  }
+  .truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>

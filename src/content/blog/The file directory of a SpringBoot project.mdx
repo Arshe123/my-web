@@ -1,0 +1,779 @@
+---
+title: SpringBoot+Maven项目目录结构详解
+description: '帮助学习SpringBoot+Maven后端项目的目录结构'
+publishDate: 2025-11-04 21:54:58
+tags:
+  - Java
+  - SpringBoot
+  - Maven
+---
+
+import FileDirectory from '@/components/FileDirectory.astro';
+
+## 项目目录结构
+<FileDirectory directory={
+  {
+    name: "project-root",
+    isDirectory: true,
+    description: "你项目的根目录",
+    children: [
+      {
+        name: "src",
+        isDirectory: true,
+        description: "项目的源代码目录",
+        children: [
+          {
+            name: "main", isDirectory: true,
+            description: "项目的主目录，包含主要的Java源代码",
+            children: [
+              {
+                name: "java",
+                isDirectory: true,
+                isDirectory: true,
+                description: "项目的Java源代码目录",
+                children: [
+                  {
+                    name: "com.example.demo",
+                    isDirectory: true,
+                    description: "包名（组织域名反写+项目名）",
+                    children: [
+                      {
+                        name: "common",
+                        isDirectory: true,
+                        description: "公共类目录"
+                      },
+                      {
+                        name: "config",
+                        isDirectory: true,
+                        description: "配置类目录"
+                      },
+                      {
+                        name: "controller",
+                        isDirectory: true,
+                        description: "控制器目录"
+                      },
+                      {
+                        name: "entity",
+                        isDirectory: true,
+                        description: "实体类目录",
+                        children: [
+                          {
+                            name: "dto",
+                            isDirectory: true,
+                            description: "实体DTO类"
+                          },
+                          {
+                            name: "vo",
+                            isDirectory: true,
+                            description: "实体VO类"
+                          },
+                        ]
+                      },
+                      {
+                        name: "mapper",
+                        isDirectory: true,
+                        description: "映射器目录"
+                      },
+                      {
+                        name: "service",
+                        isDirectory: true,
+                        description: "服务目录",
+                        children: [
+                          {
+                            name: "impl",
+                            isDirectory: true,
+                            description: "服务实现类目录"
+                          },
+                        ]
+                      },
+                      {
+                        name: "util",
+                        isDirectory: true,
+                        description: "工具类目录"
+                      },
+                      {
+                        name: "其他目录",
+                        isDirectory: true,
+                        description: "其他自定义目录"
+                      },
+                      {
+                        name: "DemoApplication.java",
+                        isDirectory: false,
+                        description: "启动类"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                name: "resources", 
+                isDirectory: true,
+                description: "项目的资源目录",
+                children: [
+                  {
+                    name: "application.yml", 
+                    isDirectory: false,
+                    description: "应用程序配置文件"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            name: "test", isDirectory: true,
+            description: "项目的测试源代码目录",
+            children: [
+              {
+                name: "java",
+                isDirectory: true,
+                description: "项目的测试Java源代码目录",
+                children: [
+                  {
+                    name: "com.example.demo",
+                    isDirectory: true,
+                    description: "包名（组织域名反写+项目名）",
+                    children: [
+                      {
+                        name: "DemoApplicationTests.java",
+                        isDirectory: false,
+                        description: "测试类"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: "target",
+        isDirectory: true,
+        description: "项目的目标目录，包含编译后的类文件和其他生成的资源",
+      },
+      { name: "pom.xml", isDirectory: false, description: "Maven项目对象模型文件" },
+    ]
+  }
+} class="expanded" />
+
+---
+## 项目目录详解
+### common
+这是项目的公共类目录，包含项目的所有公共类文件。
+
+主要是一些需要全局使用的类，如枚举值、全局常量、自定义异常等。
+
+1. 枚举值：
+```java
+@Getter
+public enum Status {
+    SUCCESS(200, "成功"),
+    FAIL(500, "失败");
+
+    private final Integer code;
+    private final String message;
+
+    Status(int code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+}
+```
+
+2. 全局常量：
+```java
+public final class RoleTypeConst {
+    public static final String ADMIN = "0";
+    public static final String USER = "1"; 
+}
+```
+
+3. 自定义异常：
+```java
+@Getter
+public class AppException extends Exception {
+    private final Integer code;
+    private final String message;
+
+    public AppException(Integer code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
+    public AppException(String message) {
+        this(Status.ERROR.getCode(), message);
+    }
+
+    public AppException(Status status)  {
+        this(status.getCode(), status.getMessage());
+    }
+
+    public AppException() {
+        this(Status.ERROR);
+    }
+}
+```
+4. 请求返回值：
+```java
+@Data
+public class Response<T> {
+    private Integer code;
+    private String message;
+    private T data;
+}
+```
+
+---
+### config
+这是项目的配置类目录，包含项目的所有配置类文件。
+
+用于配置各类服务的使用参数。
+
+1. 雪花算法配置类:
+```java
+@Configuration
+public class SnowflakeConfiguration {
+    
+    @Bean
+    public SnowflakeDistributeIdUtil getSnowFlake() {
+        return new SnowflakeDistributeIdUtil(0, 0);
+    }
+}
+```
+
+2. 第三方服务（硅基流动）配置类：
+```java
+@Configuration
+@Getter
+public class SiliconFlowConfiguration{
+
+    @Value("${siliconflow.auth.apikey}")
+    private String apiKey;
+
+    @Value("${siliconflow.baseUrl}")
+    private String baseURl;
+
+    @Value("${siliconflow.model}")
+    private String model;
+}
+```
+
+3. SpringMVC配置类：
+```java
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new RequestInterceptor())
+            .addPathPatterns("/api/**")
+            .excludePathPatterns("/api/login", "/api/register");
+    }
+}
+```
+
+---
+### controller
+这是项目的控制器目录，包含项目的所有控制器类文件。
+
+控制器是项目中处理用户请求的类，通常会**处理用户输入的参数，调用业务逻辑，返回结果**给用户。
+
+**注意**：控制器不做实际业务逻辑
+
+AuthController：
+```java
+@Slf4j
+@RestController
+@RequestMapping("/auth")
+public class AuthController extends BaseController{
+    /**
+     * 登录
+     * @return
+     */
+    @PostMapping("/login")
+    public Result<LoginVO> login(@RequestBody UserDTO userDTO) throws AppException {
+        log.info("登录 -- {}", userDTO);
+        return Result.success(authService.doLogin(userDTO));
+    }
+}
+```
+在这个控制器类中，我们定义了一个登录接口，接收用户提交的用户信息，并调用业务逻辑进行登录，最后返回登录结果给用户。没有做一点业务逻辑。
+
+1. 前端发送请求`POST /auth/login`，请求体包含用户信息（用户名、密码等）。
+2. 控制器接收请求，调用服务层方法`authService.doLogin（userDTO）`进行登录。
+3. 控制器将业务逻辑返回的结果用自定义返回值函数`Result.success()`封装为 JSON 格式，返回给前端。
+
+---
+### service
+这是项目的服务层接口目录，包含项目的所有服务层接口文件。
+
+定义了项目的业务方法规范。服务层做的是**处理业务逻辑，调用数据访问层，返回结果**给控制器。
+
+AuthService：
+```java
+public interface AuthService {
+    LoginVO doLogin(UserDTO userDTO) throws AppException;
+}
+```
+在这个接口中，我们定义了一个登录接口，接收用户提交的用户信息，并返回登录结果。
+
+---
+### impl
+这是项目的服务层实现类文件夹，包含项目的所有服务层实现类文件。
+
+实现服务层接口，重写业务方法，完成实际业务代码。
+
+AuthServiceImpl：
+```java
+@Slf4j
+@Service
+public class AuthServiceImpl implements AuthService {
+
+    @Resource
+    private UserMapper userMapper;
+
+    @Resource
+    private JwtConfig jwtConfig;
+
+    @Override
+    public LoginVO doLogin(UserDTO userDTO) throws AppException {
+        User u = userMapper.selectOneByQuery(new QueryWrapper().eq(User::getUsername, userDTO.getUsername()));
+
+        if (u == null){
+            log.info("用户不存在");
+            throw new AppException(Status.USER_NOT_EXIST);
+        }
+
+        // 密码是加密的
+        String s = DigestUtils.md5DigestAsHex(userDTO.getPassword().getBytes());
+        if (!u.getPassword().equals(s)){
+            log.info("密码错误");
+            throw new AppException(Status.PASSWORD_ERROR);
+        }
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", u.getUserId());
+
+        // 生成jwt令牌
+        String token = JwtUtil.createJWT(jwtConfig.getSecretKey(), jwtConfig.getTokenExpireTime(), claims);
+
+
+        LoginVO vo = LoginVO.builder()
+                .userId(String.valueOf(u.getUserId()))
+                .username(u.getUsername())
+                .token(token)
+                .expireTime(String.valueOf(System.currentTimeMillis() + jwtConfig.getTokenExpireTime()))
+                .build();
+
+        return vo;
+    }
+}
+```
+这个实现类类中，我们实现了`AuthService`接口中的登录方法，接收用户提交的用户信息，并调用数据访问层`UserMapper`进行数据查询。
+
+---
+### mapper
+这是项目的数据访问层目录，包含项目的所有数据访问层类文件。
+
+数据访问层是项目的核心类，通常会**处理数据访问逻辑，调用数据库，返回结果**给业务逻辑层。
+
+UserMapper：
+```java
+@Mapper
+public interface UserMapper extends BaseMapper<User> {
+}
+```
+在这个数据访问层类中，我们定义了一个用户数据访问接口，这里本应定义用户数据访问逻辑即sql语句。
+
+因为我使用了[Mybatis-Flex](https://mybatis-flex.com/)进行数据访问，这里就不再定义数据访问逻辑了。
+[Mybatis-Flex](https://mybatis-flex.com/)会自动生成数据访问层代码。
+
+---
+### entity
+这是项目的实体类目录，包含项目的所有实体类文件。
+
+实体类是项目的核心类，通常会**封装数据，用于数据访问层**，与表结构一一对应，目的是为了通过实体类操作数据库表。
+
+User：
+```java
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(value = "user")
+public class User implements Serializable {
+
+    /**
+     * 主键
+     */
+    @Id(keyType = KeyType.Generator, value = "snowFlakeId")
+    private BigInteger id;
+
+    /**
+     * 用户id
+     */
+    private BigInteger userId;
+
+    /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 密码
+     */
+    private String password;
+
+    /**
+     * 创建时间
+     */
+    @Column(onInsertValue = "CURRENT_TIMESTAMP")
+    private LocalDateTime createTime;
+
+    /**
+     * 更新时间
+     */
+    @Column(onInsertValue = "CURRENT_TIMESTAMP", onUpdateValue = "CURRENT_TIMESTAMP")
+    private LocalDateTime updateTime;
+}
+```
+```sql
+CREATE TABLE `user` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` bigint(20) NOT NULL COMMENT '用户id',
+  `username` varchar(255) NOT NULL COMMENT '用户名',
+  `password` varchar(255) NOT NULL COMMENT '密码',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE C
+)
+```
+
+在这个实体类中，我们定义了一个用户实体类，封装了用户数据。
+
+---
+### dto
+这是项目的数据传输对象目录，包含项目的所有数据传输对象类文件，全称Data Transfer Object。
+
+数据传输对象是项目的核心类，用于**封装前端传过来的的数据，用于控制器处理**，[详见前控制器示例中方法的参数](#controller)。
+
+UserDTO：
+```java
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserDTO {
+
+    /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 密码
+     */
+    private String password;
+}
+```
+在这个数据传输对象类中，我们定义了一个用户数据传输对象类，封装了用户数据。
+
+---
+### vo
+这是项目的值对象目录，包含项目的所有数据返回对象类文件，全称Value Object。
+
+值对象是项目的核心类，用于**封装核心数据返回给控制器，从而返回给前端**，[详见前服务层示例中方法的返回值](#service)以及[前控制器示例中方法的返回值](#controller)。
+
+和dto有些许类似，但更专注于视图层的数据，包括前端展示的必要数据，删除掉用户密码、创建时间等敏感信息。
+
+LoginVO：
+```java
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class LoginVO {
+
+    /**
+     * 用户id
+     */
+    private String userId;
+
+    /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 令牌
+     */
+    private String token;
+
+    /**
+     * 令牌过期时间
+     */
+    private String expireTime;
+}
+```
+
+---
+### 其他实体类
+不仅仅是只有dto和vo这两种实体类，常用是这两种也够开发使用。其他包括但不限于以下的实体类：
+1. **BO**：业务对象，用于封装业务数据。
+2. **PO**：持久化对象，用于封装数据库查询结果。
+3. **DAO**：数据访问对象，用于封装数据库访问逻辑。  
+4. **DO**：领域对象，通常用于表示业务领域中的实体或业务对象。
+
+---
+### utils
+这是项目的工具类目录，包含项目的所有工具类文件。
+
+工具类是项目的核心类，通常会**封装一些常用的方法，用于项目的开发**。
+
+1. jwt生成和解密工具类：
+```java
+public class JwtUtil {
+
+    @Resource
+    private JwtConfig jwtConfig;
+
+    /**
+     * 生成jwt
+     * 使用Hs256算法, 私匙使用固定秘钥
+     *
+     * @param secretKey jwt秘钥
+     * @param ttlMillis jwt过期时间(毫秒)
+     * @param claims    设置的信息
+     * @return
+     */
+    public static String createJWT(String secretKey, long ttlMillis, Map<String, Object> claims) {
+        // 生成JWT的时间
+        long expMillis = System.currentTimeMillis() + ttlMillis;
+        Date exp = new Date(expMillis);
+
+        //生成 HMAC 密钥，根据提供的字节数组长度选择适当的 HMAC 算法，并返回相应的 SecretKey 对象。
+        SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+
+        // 设置jwt的body
+        JwtBuilder builder = Jwts.builder()
+                // 设置签名使用的签名算法和签名使用的秘钥
+                .signWith(key)
+                // 如果有私有声明，一定要先设置这个自己创建的私有的声明，这个是给builder的claim赋值，一旦写在标准的声明赋值之后，就是覆盖了那些标准的声明的
+                .claims(claims)
+                // 设置过期时间
+                .expiration(exp);
+
+        return builder.compact();
+    }
+
+    /**
+     * Token解密
+     *
+     * @param secretKey jwt秘钥 此秘钥一定要保留好在服务端, 不能暴露出去, 否则sign就可以被伪造, 如果对接多个客户端建议改造成多个
+     * @param token     加密后的token
+     * @return
+     */
+    public static Claims parseJWT(String secretKey, String token) {
+        //生成 HMAC 密钥，根据提供的字节数组长度选择适当的 HMAC 算法，并返回相应的 SecretKey 对象。
+        SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+
+        // 得到DefaultJwtParser
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims;
+    }
+}
+```
+
+2. 雪花算法工具类：
+```java
+/**
+ * 雪花算法
+ * 来自：<a href="https://pdai.tech/md/algorithm/alg-domain-id-snowflake.html">...</a>
+ */
+public class SnowflakeDistributeIdUtil {
+    // ==============================Fields===========================================
+
+    /**
+     * 机器id所占的位数
+     */
+    private final long workerIdBits = 5L;
+
+    /**
+     * 数据标识id所占的位数
+     */
+    private final long datacenterIdBits = 5L;
+
+    /**
+     * 工作机器ID(0~31)
+     */
+    private final long workerId;
+
+    /**
+     * 数据中心ID(0~31)
+     */
+    private final long datacenterId;
+
+    /**
+     * 毫秒内序列(0~4095)
+     */
+    private long sequence = 0L;
+
+    /**
+     * 上次生成ID的时间截
+     */
+    private long lastTimestamp = -1L;
+
+    //==============================Constructors=====================================
+
+    /**
+     * 构造函数
+     *
+     * @param workerId     工作ID (0~31)
+     * @param datacenterId 数据中心ID (0~31)
+     */
+    public SnowflakeDistributeIdUtil(long workerId, long datacenterId) {
+        // 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数)
+        long maxWorkerId = ~(-1L << workerIdBits);
+        if (workerId > maxWorkerId || workerId < 0) {
+            throw new IllegalArgumentException(String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));
+        }
+
+        // * 支持的最大数据标识id，结果是31
+        long maxDatacenterId = ~(-1L << datacenterIdBits);
+        if (datacenterId > maxDatacenterId || datacenterId < 0) {
+            throw new IllegalArgumentException(String.format("datacenter Id can't be greater than %d or less than 0", maxDatacenterId));
+        }
+        this.workerId = workerId;
+        this.datacenterId = datacenterId;
+    }
+
+    // ==============================Methods==========================================
+
+    /**
+     * 获得下一个ID (该方法是线程安全的)
+     *
+     * @return SnowflakeId
+     */
+    public synchronized Long nextId() {
+        long timestamp = timeGen();
+
+        //如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
+        if (timestamp < lastTimestamp) {
+            throw new RuntimeException(
+                    String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
+        }
+
+        // 如果是同一时间生成的，则进行毫秒内序列
+        // 序列在id中占的位数
+        long sequenceBits = 12L;
+        if (lastTimestamp == timestamp) {
+
+            // 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095)
+
+            long sequenceMask = ~(-1L << sequenceBits);
+            sequence = (sequence + 1) & sequenceMask;
+            //毫秒内序列溢出
+            if (sequence == 0) {
+                //阻塞到下一个毫秒,获得新的时间戳
+                timestamp = tilNextMillis(lastTimestamp);
+            }
+        }
+        //时间戳改变，毫秒内序列重置
+        else {
+            sequence = 0L;
+        }
+
+        //上次生成ID的时间截
+        lastTimestamp = timestamp;
+
+        //移位并通过或运算拼到一起组成64位的ID
+
+        // 开始时间截 (2015-01-01)
+        long twepoch = 1420041600000L;
+
+        // 时间截向左移22位(5+5+12)
+        long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
+
+        // 数据标识id向左移17位(12+5)
+        long datacenterIdShift = sequenceBits + workerIdBits;
+
+        // * 机器ID向左移12位
+        return ((timestamp - twepoch) << timestampLeftShift) //
+                | (datacenterId << datacenterIdShift) //
+                | (workerId << sequenceBits) //
+                | sequence;
+    }
+
+    /**
+     * 阻塞到下一个毫秒，直到获得新的时间戳
+     *
+     * @param lastTimestamp 上次生成ID的时间截
+     * @return 当前时间戳
+     */
+    protected long tilNextMillis(long lastTimestamp) {
+        long timestamp = timeGen();
+        while (timestamp <= lastTimestamp) {
+            timestamp = timeGen();
+        }
+        return timestamp;
+    }
+
+    /**
+     * 返回以毫秒为单位的当前时间
+     *
+     * @return 当前时间(毫秒)
+     */
+    protected long timeGen() {
+        return System.currentTimeMillis();
+    }
+}
+```
+
+---
+### resources
+项目的资源目录，存放静态资源文件，如：图片、css、js、fonts等。
+
+以及项目的配置文件，如：application.yml、application-dev.yml、application-prod.yml等。 
+
+如果你的项目使用的是Mybatis，那么resources目录下应该有mapper的映射文件，如：
+<FileDirectory directory={
+  {
+    name: "resources",
+    isDirectory: true,
+    children: [
+      {
+        name: "mapper",
+        isDirectory: true,
+        children: [
+          {
+            name: "UserMapper.xml",
+            type: "file"
+          }
+        ]
+      },
+      {
+        name: "application.yml",
+        type: "file"
+      }
+    ]
+  }
+} class="expanded"/>
+
+
+---
+### test
+项目的测试目录，存放测试用例。
+
+
+---
+### target
+项目的编译输出目录，存放编译后的classes文件，如jar/war包等。
+
+
+---
+### pom.xml
+项目的配置文件，使用Maven进行构建，Maven会根据pom.xml文件进行项目构建。
+
+用于描述项目的信息，如：项目名、版本、依赖包、插件等。
