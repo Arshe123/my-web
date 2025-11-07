@@ -173,6 +173,16 @@ const indentStyle = `pl-${4 + depth * 2}`;
   file-directory > div > .expand-title .desc {
     flex-shrink: 10;
   }
+  /* 描述颜色更浅，hover 当前目录时变明显 */
+  file-directory > div > .expand-title .desc {
+    color: var(--muted-foreground);
+    opacity: 0.65;
+    transition: color 150ms ease-in-out, opacity 150ms ease-in-out;
+  }
+  file-directory > div > .expand-title:hover .desc {
+    color: var(--primary);
+    opacity: 1;
+  }
   /* 展开时为当前层级的子列表添加左侧虚线连接（不影响文字不透明度） */
   file-directory.expanded > div > .expand-content > .children-container {
     position: relative;
