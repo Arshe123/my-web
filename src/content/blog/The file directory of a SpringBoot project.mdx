@@ -70,6 +70,11 @@ import FileDirectory from '@/components/FileDirectory.astro';
                         ]
                       },
                       {
+                        name: "interceptor",
+                        isDirectory: true,
+                        description: "拦截器目录"
+                      },
+                      {
                         name: "mapper",
                         isDirectory: true,
                         description: "映射器目录"
@@ -521,6 +526,87 @@ public class LoginVO {
 2. **PO**：持久化对象，用于封装数据库查询结果。
 3. **DAO**：数据访问对象，用于封装数据库访问逻辑。  
 4. **DO**：领域对象，通常用于表示业务领域中的实体或业务对象。
+
+---
+### interceptor
+拦截器，用于拦截处理一些信息，比如前端的请求、异常的处理。
+
+1. **JwtTokenInterceptor**：jwt令牌校验的拦截器，用于拦截处理请求信息，校验前端请求中的jwt令牌。
+```java
+@Component
+@Slf4j
+public class JwtTokenInterceptor implements HandlerInterceptor {
+
+    @Resource
+    private JwtConfig jwt;
+
+    /**
+     * 校验jwt
+     *
+     * @param request
+     * @param response
+     * @param handler
+     * @return
+     * @throws Exception
+     */
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        //判断当前拦截到的是Controller的方法还是其他资源
+        if (!(handler instanceof HandlerMethod)) {
+            //当前拦截到的不是动态方法，直接放行
+            return true;
+        }
+
+        //1、从请求头中获取令牌
+        String token = request.getHeader(jwt.getTokenName());
+
+        //2、校验令牌
+        try {
+            log.info("jwt校验:{}", token);
+            Claims claims = JwtUtil.parseJWT(jwt.getSecretKey(), token);
+            BigInteger userId = BigInteger.valueOf(Long.parseLong(claims.get("userId").toString()));
+            log.info("当前用户id -- {}", userId);
+            //储存当前用户id
+            BaseContext.setCurrentId(userId);
+            //3、通过，放行
+            return true;
+        } catch (Exception ex) {
+            //4、不通过，响应401状态码
+            response.setStatus(401);
+            return false;
+        }
+    }
+}
+```
+
+2. **GlobalExceptionHandler**：全局异常处理类，用于处理项目中抛出的异常。
+```java
+@Slf4j
+@ControllerAdvice
+public class GlobalExceptionHandler {
+    /**
+     * 应用异常处理
+     */
+    @ResponseBody
+    @ExceptionHandler(AppException.class)
+    public Result<String> appExceptionHandler(AppException e) {
+        log.error(e.getMessage());
+        return Result.error(e.getCode(), e.getMessage());
+    }
+
+    /**
+     * 通用异常处理
+     *
+     * @param e Springboot 捕获的异常
+     * @return Result<String> 通用错误
+     */
+    @ResponseBody
+    @ExceptionHandler(Exception.class)
+    public Result<String> exceptionHandler(Exception e) {
+        log.error(e.getMessage());
+        return Result.error(Status.ERROR);
+    }
+}
+```
 
 ---
 ### utils
