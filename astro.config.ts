@@ -1,6 +1,7 @@
 import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import vercel from '@astrojs/vercel'
 import AstroPureIntegration from 'astro-pure'
+import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
@@ -51,7 +52,7 @@ export default defineConfig({
 
   integrations: [
     // astro-pure will automatically add sitemap, mdx & unocss
-    // sitemap(),
+    sitemap(),
     // mdx(),
     AstroPureIntegration(config)
     // (await import('@playform/compress')).default({
