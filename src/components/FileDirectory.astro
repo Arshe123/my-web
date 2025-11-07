@@ -72,7 +72,7 @@ const indentStyle = `pl-${4 + depth * 2}`;
         <div class="flex min-w-0 flex-1 items-center">
           <p class="m-0 min-w-0 transition-colors group-hover/highlight:text-primary truncate">{directory.name}</p>
           {directory.description ? (
-            <span class="ml-2 min-w-0 text-muted-foreground truncate">— {directory.description}</span>
+            <span class="ml-2 min-w-0 flex-1 text-muted-foreground truncate desc">— {directory.description}</span>
           ) : null}
         </div>
       </div>
@@ -168,6 +168,10 @@ const indentStyle = `pl-${4 + depth * 2}`;
   }
   file-directory.expanded > div > .expand-title .expand-button svg polyline {
     transform: translateX(0);
+  }
+  /* 描述优先收缩，文件名优先显示 */
+  file-directory > div > .expand-title .desc {
+    flex-shrink: 10;
   }
   /* 展开时为当前层级的子列表添加左侧虚线连接（不影响文字不透明度） */
   file-directory.expanded > div > .expand-content > .children-container {
