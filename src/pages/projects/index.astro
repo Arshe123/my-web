@@ -11,12 +11,26 @@ import KeyIcon from '@/assets/icons/key.svg'
 import wechat from '@/assets/wechat-qrcode.jpg'
 
 const headings = [
+  { depth: 2, slug: 'theme', text: 'Theme' },
   { depth: 2, slug: 'others', text: 'Others' },
   // { depth: 2, slug: 'sponsorship', text: 'Sponsorship' }
 ]
 ---
 
 <PageLayout title='Projects' {headings} view>
+  <h2 id='theme'>Theme</h2>
+  <ProjectSection
+    projects={[
+      {
+        name: 'Arshe\'s site',
+        description: '基于 astor-theme-pure 进行个性化的博客主题',
+        links: [
+          { type: 'github', href: 'https://github.com/Arshe123/my-web' },
+        ]
+      }
+    ]}
+  />
+
   <h2 id='others'>Others</h2>
   <ProjectSection
     projects={[
@@ -39,15 +53,15 @@ const headings = [
   </Button> -->
 
   <!-- sponsorship -->
-  <!-- <h2 id='sponsorship'>Sponsorship</h2>
-  <p>Please leave a message or contact me proactively after sponsorship.</p>
+  <h2 id='sponsorship'>Sponsorship</h2>
+  <p>谢谢你的支持，赞赏后请留言或与我联系取得联系，所有赞赏将用于网站运营。</p>
   <Sponsorship
     methods={[
       { name: 'WeChat', icon: 'wechat-pay', image: wechat },
       { name: 'Alipay', icon: 'alipay', image: alipay }
     ]}
   />
-  <p>Thanks to the following sponsors:</p>
+  <!-- <p>Thanks to the following sponsors:</p>
   <Sponsors
     sponsors={[
       { name: 'C*a（酷安@暴走の蜗牛）', amount: '2.00', date: '2019-07-02' },
