@@ -2,6 +2,7 @@
 import { prod } from 'astro-pure/server'
 import type { SiteMeta } from 'astro-pure/types'
 import config from '@/site-config'
+import SpeedInsights from '@vercel/speed-insights/astro'
 
 type Props = SiteMeta
 
@@ -96,3 +97,5 @@ const socialImageURL = new URL(ogImage ? ogImage : '/images/social-card.png', As
     </script>
   )
 }
+
+<SpeedInsights />
