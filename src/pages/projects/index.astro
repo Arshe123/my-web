@@ -11,14 +11,14 @@ import KeyIcon from '@/assets/icons/key.svg'
 import wechat from '@/assets/wechat-qrcode.jpg'
 
 const headings = [
-  { depth: 2, slug: 'theme', text: 'Theme' },
-  { depth: 2, slug: 'others', text: 'Others' },
+  { depth: 2, slug: 'theme', text: '主题' },
+  { depth: 2, slug: 'others', text: '其他' },
   // { depth: 2, slug: 'sponsorship', text: 'Sponsorship' }
 ]
 ---
 
-<PageLayout title='Projects' {headings} comment>
-  <h2 id='theme'>Theme</h2>
+<PageLayout title='捣鼓的项目' {headings} comment>
+  <h2 id='theme'>主题</h2>
   <ProjectSection
     projects={[
       {
@@ -31,7 +31,7 @@ const headings = [
     ]}
   />
 
-  <h2 id='others'>Others</h2>
+  <h2 id='others'>其他</h2>
   <ProjectSection
     projects={[
       {
@@ -53,8 +53,8 @@ const headings = [
   </Button> -->
 
   <!-- sponsorship -->
-  <h2 id='sponsorship'>Sponsorship</h2>
-  <p>谢谢你的支持，赞赏后请留言或与我联系取得联系，所有赞赏将用于网站运营。</p>
+  <h2 id='sponsorship'>请我喝咖啡☕</h2>
+  <p>谢谢你的支持，赞赏后请留言或与我联系，所有赞赏将用于网站运营。</p>
   <Sponsorship
     methods={[
       { name: 'WeChat', icon: 'wechat-pay', image: wechat },

@@ -5,24 +5,24 @@ import Substats from '@/components/about/Substats.astro'
 import ToolSection from '@/components/about/ToolSection.astro'
 
 const headings = [
-  { depth: 2, slug: 'hobbies', text: 'Hobbies' },
-  { depth: 2, slug: 'tools', text: 'Tools' },
-  { depth: 2, slug: 'social-networks', text: 'Social Networks' },
-  { depth: 2, slug: 'about-blog', text: 'About Blog' }
+  { depth: 2, slug: 'hobbies', text: '一点小爱好' },
+  { depth: 2, slug: 'tools', text: '工具' },
+  { depth: 2, slug: 'social-networks', text: '设计网络' },
+  { depth: 2, slug: 'about-blog', text: '关于本站' }
 ]
 ---
 
-<PageLayout title='About' {headings} comment>
-  <p>Programmer / Gamer / Student</p>
+<PageLayout title='关于我' {headings} comment>
+  <p>程序员 / 玩家 / 学生</p>
   <p>
     你好，我叫Arshe，一个开发者，对技术比较感兴趣。
   </p>
   <p>平时爱玩点游戏，喜欢看书。</p>
   <p>偶尔看看动漫和美剧。</p>
-  <Button title='Sponsor Me' class='w-fit' href='/projects#sponsorship' variant='ahead' />
+  <Button title='请我喝咖啡☕' class='w-fit' href='/projects#sponsorship' variant='ahead' />
 
   {/* general-talk */}
-  <h2 id='hobbies'>Hobbies</h2>
+  <h2 id='hobbies'>一点小爱好</h2>
   <ul>
     <li>玩点单机如：死亡搁浅、博德之门3等等</li>
     <li>
@@ -31,7 +31,7 @@ const headings = [
   </ul>
 
   {/* tools */}
-  <h2 id='tools'>Tools</h2>
+  <h2 id='tools'>工具</h2>
   <p>现在正在使用的工具:</p>
   <ToolSection
     class='mb-5'
@@ -89,7 +89,7 @@ const headings = [
   />
 
   {/* social-networks */}
-  <h2 id='social-networks'>Social Networks</h2>
+  <h2 id='social-networks'>社交网络</h2>
   <p>以下是我的一些社交媒体及相关数据统计：</p>
   <Substats
     stats={[
@@ -112,7 +112,7 @@ const headings = [
   />
 
   {/* about-blog */}
-  <h2 id='about-blog'>About Blog</h2>
+  <h2 id='about-blog'>关于本站</h2>
   <p>网站历史:</p>
   <Timeline
     events={[
@@ -130,6 +130,11 @@ const headings = [
         date: '2025-11-7',
         content:
           '网站接入Tencent EdgeOne，大大加快访问速度'
+      },
+      {
+        date: '2025-12-5',
+        content:
+          '发现之前EO接入并没有成功，折腾半天接入后好像并没有很快'
       }
     ]}
   />

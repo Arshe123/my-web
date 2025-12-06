@@ -19,7 +19,7 @@ const allPosts = await getBlogCollection()
 const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 ---
 
-<PageLayout meta={{ title: 'Home' }} highlightColor='#659EB9'>
+<PageLayout meta={{ title: '主页' }} highlightColor='#659EB9'>
   <main class='flex w-full flex-col items-center'>
     <section class='animate mb-10 flex flex-col items-center gap-y-7' id='content-header'>
       <Image
@@ -32,7 +32,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
       <div class='flex flex-col items-center gap-y-4'>
         <h1 class='text-3xl font-bold'>{config.author}</h1>
         <div class='flex flex-wrap justify-center gap-x-7 gap-y-3'>
-          <Label title='China / Guiyang'>
+          <Label title='贵州 / 贵阳'>
             <Icon name='location' class='size-5' slot='icon' />
           </Label>
           <Label
@@ -48,18 +48,18 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
     </section>
 
     <div id='content' class='animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6'>
-      <Section title='About'>
-        <p class='text-muted-foreground'>Programmer / Gamer / Student</p>
+      <Section title='简介'>
+        <p class='text-muted-foreground'>程序员 / 玩家 / 学生</p>
         <p class='text-muted-foreground'>
           你好，我叫Arshe，一个开发者，对技术比较感兴趣。
         </p>
         <p class='text-muted-foreground'>平时爱玩点游戏，喜欢看书。</p>
         <p class='text-muted-foreground'>偶尔看看动漫和美剧。</p>
-        <Button title='More about me' class='w-fit self-end' href='/about' variant='ahead' />
+        <Button title='了解更多' class='w-fit self-end' href='/about' variant='ahead' />
       </Section>
       {
         allPostsByDate.length > 0 && (
-          <Section title='Posts'>
+          <Section title='博客'>
             <ul class='flex flex-col gap-y-1.5 sm:gap-y-2'>
               {allPostsByDate.map((p) => (
                 <li class='flex flex-col gap-x-2 sm:flex-row'>
@@ -67,16 +67,16 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
                 </li>
               ))}
             </ul>
-            <Button title='More posts' class='w-fit self-end' href='/blog' variant='ahead' />
+            <Button title='查看更多' class='w-fit self-end' href='/blog' variant='ahead' />
           </Section>
         )
       }
-      <Section title='Education'>
+      <Section title='教育'>
         <Card
           as='a'
-          heading='Guizhou University'
-          subheading='Software Engineering'
-          date='August 2023 - Present'
+          heading='贵州大学'
+          subheading='软件工程'
+          date='2023.8 - 至今'
           href='https://www.gzu.edu.cn/'
           target='_blank'
         >
@@ -92,9 +92,9 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
         </Card>
       </Section>
 
-      <Section title='Skills'>
-        <SkillLayout title='Frontend' skills={frontend} />
-        <SkillLayout title='Backend' skills={backend} />
+      <Section title='技能'>
+        <SkillLayout title='前端' skills={frontend} />
+        <SkillLayout title='后端' skills={backend} />
       </Section>
     </div>
     <Quote class='mt-12' />
