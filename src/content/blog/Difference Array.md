@@ -22,6 +22,7 @@ diff[i] = arr[i] - arr[i - 1]	i = 1, 2, 3...
 arr[0] = diff[0]
 arr[i] = arr[i - 1] + diff[i]	i = 1, 2, 3...
 ```
+
 或
 $$
 arr[i] = \sum_{\substack{k = 0}}^{i} diff[k]
@@ -77,5 +78,5 @@ diff[right + 1] -= value
 
 多说无益，上题
 
-![image-20250522155437423](./DifferenceArray.assets/image-20250522155437423.png)
+![image-20250522155437423](https://cos.arshe.cn/DifferenceArray/image-20250522155437423.png)
 

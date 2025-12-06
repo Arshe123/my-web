@@ -16,9 +16,9 @@ tags:
 
 将项目部署到Tomcat时，若项目没有问题，应该能在Tomcat catalina.out 日志中发现SringBoot的启动画面，如下：
 
-![SpringBoot启动画面](./Troubleshooting-the-404-not-found-error-when-deploying-a-Maven-packaged-WAR-file-of-a-SpringBoot-application-to-Tomcat/Snipaste_2025-11-11_20-57-51.png)
+![SpringBoot启动画面](https://cos.arshe.cn/Troubleshooting-the-404-not-found-error-when-deploying-a-Maven-packaged-WAR-file-of-a-SpringBoot-application-to-Tomcat/Snipaste_2025-11-11_20-57-51.png)
 
-如果发现SpringBoot项目没有启动，那就是出了问题。
+如果发现SpringBoot项目没有启动，而访问网页Tomcat报错404，那大概率跟我遇到了一个问题。
 
 ---
 
