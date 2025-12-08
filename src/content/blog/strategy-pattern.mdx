@@ -1,0 +1,177 @@
+---
+title: 设计模式-策略模式
+description: '它定义了算法家族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化不会影响到使用算法的客户。'
+publishDate: 2025-12-08 21:41:26
+tags:
+  - design-pattern
+  - strategy-pattern
+---
+
+> 它定义了算法家族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化不会影响到使用算法的客户。
+
+## 前言
+
+**策略模式（Strategy Pattern）** 定义一系列算法，将每个算法封装起来，并使他们可以相互替换。
+
+接下来用商场收银的经典案例来讲解。
+
+假设有一个商场收银台，收银员需要计算顾客的消费金额，但是有很多种计算方式，比如原始计价、打折价、满减价等等。
+
+这里计算消费金额的动作都是相同的，不同的是使用的算法。这很符合策略模式的思路。
+
+## 策略模式实现
+
+**url：**
+![url](https://cos.arshe.cn/strategy-pattern/url.png)
+
+**代码实现：**
+
+```java
+/**
+ * 抽象策略
+ */
+public abstract CashSuper {
+  public abstract double acceptCash(double price, int num);
+}
+
+
+/**
+ * 正常收银
+ */
+public class CashNormal extends CashSuper {
+  @Override
+  public double acceptCash(double price, int num) {
+    return price * num;
+  }
+}
+
+/**
+ * 满减收银
+ */
+public class CashReturn extends CashSuper {
+  private double moneyCondition = 0.0d;
+  private double moneyReturn = 0.0d;
+
+  public CashReturn(double moneyCondition, double moneyReturn) {
+    this.moneyCondition = moneyCondition;
+    this.moneyReturn = moneyReturn;
+  }
+
+  @Override
+  public double acceptCash(double price, int num) {
+    double result = price * num;
+    if (result >= moneyCondition) {
+      result -= moneyReturn;
+    }
+    return result;
+  }
+}
+
+/**
+ * 折扣收银
+ */
+class CashRebate extends CashSuper {
+  private double moneyRebate = 1.0d;
+
+  public CashRebate(double moneyRebate) {
+    this.moneyRebate = moneyRebate;
+  }
+
+  @Override
+  public double acceptCash(double price, int num) {
+    return price * num * moneyRebate;
+  }
+}
+
+/**
+ * 上下文
+ */
+class CashContext {
+  private CashSuper cs;
+
+  public CashContext(CashSuper cs) {
+    this.cs = cs;
+  }
+
+  public double getResult(double price, int num) {
+    return cs.acceptCash(price, num);
+  }
+}
+```
+
+客服端主要代码：
+
+```java
+CashContext cc = null;
+
+// 选择策略
+switch (choice) {
+  case 1:
+    cc = new CashContext(new CashNormal());
+    break;
+  case 2:
+    cc = new CashContext(new CashReturn(300, 100));
+    break;
+  case 3:
+    cc = new CashContext(new CashRebate(0.8));
+    break;
+  default:
+    System.out.println("没有这种优惠方式");
+}
+
+System.out.println("单价：" + price + " 数量：" + num + " 总价：" + cc.getResult(price, num));
+```
+
+这样我们就利用策略模式完成了商场收银的场景，但是存在一个问题，就是判断逻辑在客服端中，与客服端形成了强耦合。
+
+## 策略模式 + 简单工厂模式
+
+接下来使用策略模式 + 简单工厂模式来解决：
+
+```java
+// 修改 CashContext
+public class CashContext { 
+  private CashSuper cs;
+
+  public CashContext(CashSuper cs) { // [!code --:3]
+    this.cs = cs;
+  }
+
+  public CashContext(String type) { // [!code ++:15]
+    switch (type) {
+      case 1:
+        cs = new CashNormal();
+        break;
+      case 2:
+        cs = new CashRebate(0.8);
+        break;
+      case 3: 
+        cs = new CashReturn(300, 100);
+        break; 
+      default:
+        cs = new CashNormal();
+    }
+  }
+
+  public double getResult(double price, int num) {
+    return cs.acceptCash(price, num);
+  }
+}
+```
+
+主要客服端代码：
+
+```java
+// 创建策略对象
+CashContext cc = new CashContext(strategy);
+// 获取结果
+double result = cc.getResult(price, num);
+```
+
+现在就利用简单工厂模式把判断逻辑加到了上下文类中，实现了客服端的解耦操作。
+这时客服端不用在意算法的具体实现。
+
+import { Aside } from 'astro-pure/user'
+
+<Aside>现在的实现也还存在一定的缺陷，所有判断在上下文类中进行，意味着每次新增策略都会修改一次这个类。
+还是没有写出很优雅的代码，后续介绍如何解决。</Aside>
