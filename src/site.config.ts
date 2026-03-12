@@ -57,7 +57,7 @@ export const theme: ThemeUserConfig = {
 
   /** Configure the footer of your site. */
   footer: {
-    year: `© ${new Date().getFullYear()}`,
+    year: `© 2025 - ${new Date().getFullYear()}`,
     links: [], /** 已经在下方改为自定义 */
     /** Enable displaying a “Astro & Pure theme powered” link in your site’s footer. */
     credits: true,
