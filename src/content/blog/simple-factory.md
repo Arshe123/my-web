@@ -1,7 +1,8 @@
 ---
 title: 设计模式-简单工厂模式
-description: '简单工厂设计模式'
+description: '定义一个工厂类，根据不同的参数创建并返回不同类的实例，被创建的实例通常具有共同的父类。'
 publishDate: 2025-12-08 20:35:59
+updatedDate: 2026-3-31 15:54:00
 tags:
   - design-pattern
   - simple-factory
@@ -11,7 +12,7 @@ tags:
 
 简单工厂设计模式是工厂模式中最简单的一种，以下用计算器的例子来介绍。
 
-通常来说让你写一个简易计算器代码，也许你写出的代码如下（假设所有输入都是合法的）：
+通常来说让你写一个简易计算器代码，也许你写出的客户端代码如下（假设所有输入都是合法的）：
 
 ```java
 public class Main {
@@ -44,7 +45,7 @@ public class Main {
             num2 = Double.parseDouble(input2);
 
             double result = calculate(num1, num2, operator);
-            System.out.printf("\n✅ 计算结果：%.2f %s %.2f = %.2f\n\n", num1, operator, num2, result);
+            System.out.printf("\n计算结果：%.2f %s %.2f = %.2f\n\n", num1, operator, num2, result);
         }
         scanner.close();
     }
@@ -74,18 +75,27 @@ public class Main {
 
 这样确实实现了计算器的功能，但是它并不利于维护。
 
-如果我要加新一种运算，比如求余数，那么我需要修改`Calculator`类中的`calculate`方法，新加一种`case`去判断。
-这并不符合面向对象的思想。
+如果我要加新一种运算，比如求余数，那么我需要修改类中的 `calculate` 方法，新加一种 `case` 分支去判断。
+
+这种写法的耦合度极高，每次增加运算方法都要修改客户端代码，并不符合面向对象的思想。
 
 考虑使用简单工厂模式来实现。
 
 ## 简单工厂实现
 
-UML图：
+### 定义
+
+简单工厂模式（Simple Factory Pattern）是一种创建型设计模式，它定义了一个工厂类，根据不同的参数创建并返回不同类的实例，被创建的实例通常具有共同的父类。
+
+### 计算器UML类图
 
 ![url](https://cos.arshe.cn/simple-factory/url.png)
 
-代码如下：
+- **Operation**: 运算抽象类，定义了运算方法。
+
+- **OperationFactory**: 工厂类，根据运算符创建对应的运算类。
+
+### 代码实现
 
 ```java
 /**
@@ -160,25 +170,32 @@ public class OperationFactory {
 客户端代码如下：
 
 ```java
-// 获取运算类
+// 获取运算类 operate: 运算符 "+", "-", "*", "/"
 Operation operation = OperationFactory.createOperation(operate);
 // 计算结果
 result = operation.calculate(num1, num2);
 ```
 
-这样便可从客服端解耦，只需要靠工厂类获取计算类对象来运算即可获取结果。
+这样便可客户端解耦，只需要靠工厂类获取计算类对象来运算即可获取结果。客户端并不关心具体实现，只需要知道运算符并使用对应的运算类即可。
 
-当我需要添加新的运算符时，只需要在工厂类中添加新的运算符即可，不需要修改客户端代码。
+当我需要添加新的运算符时，只需要实现相应的运算类并在工厂类中添加新的运算符即可，不需要修改客户端代码。
 比如添加一个指数运算：
 
 ```java
 /**
- * 指数运算
+ * 指数运算 快速幂算法
  */
 public class Pow extends Operation { // [!code ++]
   @Override // [!code ++]
-  public double calculate(double num1, double num2) { // [!code ++]
-    return Math.pow(num1, num2); // [!code ++]
+  public double calculate(double x, int n) { // [!code ++]
+    double res = 1.0; // [!code ++]
+    for(int i = n; i != 0; i /= 2){ // [!code ++]
+        if(i % 2 != 0){ // [!code ++]
+            res *= x; // [!code ++]
+        } // [!code ++]
+        x *= x; // [!code ++]
+    } // [!code ++]
+    return n < 0 ? 1 / res : res; // [!code ++]
   } // [!code ++]
 } // [!code ++]
 
@@ -204,5 +221,7 @@ public class OperationFactory {
   }
 }
 ```
+
+### 缺陷
 
 虽然客服端不再做逻辑判断，拓展性了好了很多。但是也存在缺陷，每次增加新的运算，也需要去修改工厂类的代码。后续介绍优化的工厂模式。

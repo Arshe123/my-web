@@ -2,12 +2,11 @@
 title: 设计模式-策略模式
 description: '它定义了算法家族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化不会影响到使用算法的客户。'
 publishDate: 2025-12-08 21:41:26
+updatedDate: 2026-4-2 20:05:00
 tags:
   - design-pattern
   - strategy-pattern
 ---
-
-> 它定义了算法家族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化不会影响到使用算法的客户。
 
 ## 前言
 
@@ -21,8 +20,14 @@ tags:
 
 ## 策略模式实现
 
-**url：**
-![url](https://cos.arshe.cn/strategy-pattern/url.png)
+**商场收银UML类图**
+![UML类图](https://cos.arshe.cn/strategy-pattern/url.png)
+
+- CashSuper：抽象策略类，定义了一个抽象方法 `acceptCash()`，用于计算消费金额。
+- CashNormal：正常收银类，继承自 CashSuper，实现了 `acceptCash()` 方法，根据单价和数量计算消费金额。
+- CashReturn：满减收银类，继承自 CashSuper，实现了 `acceptCash()` 方法，根据满减条件计算消费金额。
+- CashRebate：折扣收银类，继承自 CashSuper，实现了 `acceptCash()` 方法，根据折扣率计算消费金额。
+- CashContext：上下文类，持有一个 CashSuper 对象，提供一个 `getResult()` 方法，调用 CashSuper 的 `acceptCash()` 方法计算消费金额。
 
 **代码实现：**
 
@@ -122,11 +127,12 @@ switch (choice) {
 System.out.println("单价：" + price + " 数量：" + num + " 总价：" + cc.getResult(price, num));
 ```
 
-这样我们就利用策略模式完成了商场收银的场景，但是存在一个问题，就是判断逻辑在客服端中，与客服端形成了强耦合。
+这样我们就利用策略模式完成了商场收银的场景，但是存在一个问题，就是选择使用哪个策略的判断逻辑在客户端中，与客户端形成了强耦合。
+以后需要更新策略都要修改客户端代码，显然是不合理的。
 
 ## 策略模式 + 简单工厂模式
 
-接下来使用策略模式 + 简单工厂模式来解决：
+接下来使用策略模式 + 简单工厂模式来解决上述问题
 
 ```java
 // 修改 CashContext
@@ -169,9 +175,11 @@ double result = cc.getResult(price, num);
 ```
 
 现在就利用简单工厂模式把判断逻辑加到了上下文类中，实现了客服端的解耦操作。
-这时客服端不用在意算法的具体实现。
+这时客户端不用在意算法的具体实现。
 
 import { Aside } from 'astro-pure/user'
 
-<Aside>现在的实现也还存在一定的缺陷，所有判断在上下文类中进行，意味着每次新增策略都会修改一次这个类。
-还是没有写出很优雅的代码，后续介绍如何解决。</Aside>
+<Aside>
+现在的实现也还存在一定的缺陷，所有判断在上下文类中进行，意味着每次新增策略都会修改一次这个类。
+还是没有写出很优雅的代码，后续介绍如何解决。
+</Aside>
