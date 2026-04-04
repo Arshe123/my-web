@@ -4,15 +4,11 @@ import { Image } from 'astro:assets'
 import { Quote } from 'astro-pure/advanced'
 import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
-import { Button, Card, Icon, Label } from 'astro-pure/user'
+import { Button, Icon, Label } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
 import Section from '@/components/home/Section.astro'
-import SkillLayout from '@/components/home/SkillLayout.astro'
 import avatar from '@/assets/avatar.png'
 import config from '@/site-config'
-
-const frontend = ['JavaScript', 'Vite', 'Vue', 'Astro', 'CSS', 'Html']
-const backend = ['Java', 'Php', 'Python']
 
 const MAX_POSTS = 10
 const allPosts = await getBlogCollection()
@@ -71,31 +67,6 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
           </Section>
         )
       }
-      <Section title='教育'>
-        <Card
-          as='a'
-          heading='贵州大学'
-          subheading='软件工程'
-          date='2023.8 - 至今'
-          href='https://www.gzu.edu.cn/'
-          target='_blank'
-        >
-          {
-            //  <ul class='ms-4 list-disc text-muted-foreground'>
-            //   <li>
-            //     Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore debitis recusandae, ut
-            //     molestiae laboriosam pariatur!
-            //   </li>
-            //   <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, pariatur!</li>
-            // </ul> 
-          }
-        </Card>
-      </Section>
-
-      <Section title='技能'>
-        <SkillLayout title='前端' skills={frontend} />
-        <SkillLayout title='后端' skills={backend} />
-      </Section>
     </div>
     <Quote class='mt-12' />
   </main>
